@@ -13,7 +13,7 @@ import speech_recognition as sr
 
 class speakNode():
     def __init__(self):
-        self.sub = rospy.Publisher('speak_txt',String,1)
+        self.text_pub = rospy.Publisher('speak_txt',String,1)
         self.srv = rospy.Service('test_speak', SetBool, self.callback_srv) 
         self.goal_sound =simpleaudio.WaveObject.from_wave_file(roslib.packages.get_pkg_dir('zundam_orne')+'/voice/goal.wav')
         self.white_sound =simpleaudio.WaveObject.from_wave_file(roslib.packages.get_pkg_dir('zundam_orne') +'/voice/white.wav')
@@ -25,6 +25,11 @@ class speakNode():
     #         os.remove(txtfile)
     #     else:
     #         pass
+    def callback_srv(self,data):
+        resp = SetBoolResponse()
+        if data.data == True:
+            play_sound = self.auto_sound.play()
+            play_sound.wait_done()
 
     def listen_and_speak(self):
         r = sr.Recognizer()
@@ -42,6 +47,8 @@ class speakNode():
                     print("Loading...")
 
                     pick_word = r.recognize_google(voice, language='ja-JP')
+                    self.word.data = pick_word
+                    self.text_pub.publish(self.word)
                     if ("あ"or"あー") in pick_word:
                         print(pick_word)
                         
