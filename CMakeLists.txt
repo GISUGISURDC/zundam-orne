@@ -10,7 +10,7 @@ project(zundam_orne)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
-  waypoint_manager_msgs
+  # waypoint_manager_msgs
 )
 
 ## System dependencies are found with CMake's conventions
